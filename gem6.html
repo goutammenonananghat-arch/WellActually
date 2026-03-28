@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Well Actually 🤓👆</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Space+Grotesk:wght@300;400;500;600&family=Courier+Prime:ital@0;1&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1208;
+      --paper: #f5f0e8;
+      --paper2: #ede8dc;
+      --red: #c0392b;
+      --gold: #c9952a;
+      --green: #2a7a4b;
+      --blue: #1a3a6b;
+      --muted: #7a6f5f;
+      --rule: #c8bfaa;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Space Grotesk', sans-serif;
+      min-height: 100vh;
+    }
+
+    .masthead {
+      border-bottom: 4px double var(--ink);
+      text-align: center;
+      background: var(--paper);
+    }
+
+    .masthead-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 32px 8px;
+      border-bottom: 1px solid var(--rule);
+      font-family: 'Courier Prime', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .masthead-title { padding: 18px 32px 12px; }
+
+    .masthead-title h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(44px, 9vw, 88px);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 0.95;
+    }
+
+    .masthead-title h1 em { font-style: italic; color: var(--red); }
+
+    .masthead-sub {
+      font-family: 'Courier Prime', monospace;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .masthead-rule {
+      height: 3px;
+      background: linear-gradient(90deg, var(--ink) 0%, var(--ink) 33%, var(--red) 33%, var(--red) 66%, var(--gold) 66%);
+    }
+
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 32px 100px;
+    }
+
+    /* INPUT */
+    .input-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 36px;
+      margin-bottom: 40px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    @media(max-width:620px){ .input-section { grid-template-columns:1fr; } }
+
+    .input-left h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-style: italic;
+      line-height: 1.25;
+      margin-bottom: 12px;
+    }
+
+    .input-left p {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .examples-label {
+      font-family: 'Courier Prime', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .example-chips { display: flex; flex-direction: column; gap: 6px; }
+
+    .chip {
+      background: none;
+      border: 1px solid var(--rule);
+      color: var(--muted);
+      font-family: 'Courier Prime', monospace;
+      font-size: 11px;
+      padding: 7px 12px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s;
+      border-radius: 2px;
+    }
+
+    .chip:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+    .input-right { display: flex; flex-direction: column; gap: 12px; }
+
+    .field-label {
+      font-family: 'Courier Prime', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    textarea {
+      width: 100%;
+      border: 2px solid var(--ink);
+      background: white;
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-style: italic;
+      color: var(--ink);
+      padding: 16px;
+      resize: none;
+      min-height: 130px;
+      outline: none;
+      line-height: 1.6;
+      transition: border-color 0.2s;
+    }
+
+    textarea::placeholder { color: #bbb; }
+    textarea:focus { border-color: var(--red); }
+
+    .submit-btn {
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 14px 24px;
+      cursor: pointer;
+      transition: background 0.15s;
+      width: 100%;
+    }
+
+    .submit-btn:hover:not(:disabled) { background: var(--red); }
+    .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* LOADING */
+    .loading-section {
+      display: none;
+      padding: 80px 0;
+      text-align: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .loading-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: 34px;
+      font-style: italic;
+      margin-bottom: 36px;
+      color: var(--ink);
+    }
+
+    .loading-steps {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      width: 340px;
+      margin: 0 auto 28px;
+    }
+
+    .loading-step {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--rule);
+      opacity: 0.25;
+      transition: opacity 0.4s ease;
+    }
+
+    .loading-step.active { opacity: 1; }
+    .loading-step.done { opacity: 0.55; }
+
+    .step-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--rule);
+      flex-shrink: 0;
+      transition: background 0.3s ease;
+    }
+
+    .loading-step.active .step-dot { background: var(--red); box-shadow: 0 0 0 3px rgba(192,57,43,0.2); }
+    .loading-step.done .step-dot { background: var(--green); }
+
+    .step-label {
+      font-family: 'Courier Prime', monospace;
+      font-size: 12px;
+      color: var(--ink);
+      letter-spacing: 0.08em;
+      text-align: left;
+      flex: 1;
+    }
+
+    .step-status {
+      font-family: 'Courier Prime', monospace;
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .loading-step.active .step-status { color: var(--red); }
+    .loading-step.done .step-status { color: var(--green); }
+
+    .loading-bar-wrap {
+      width: 340px;
+      height: 2px;
+      background: var(--rule);
+      margin: 0 auto 0;
+      overflow: hidden;
+    }
+
+    .loading-bar {
+      height: 100%;
+      background: var(--red);
+      animation: loadBar 1.8s ease-in-out infinite;
+    }
+
+    .loading-sub {
+      font-family: 'Courier Prime', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 18px;
+      letter-spacing: 0.1em;
+    }
+
+    /* RESULTS */
+    #resultsSection { display: none; }
+
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid var(--ink);
+      margin-bottom: 28px;
+    }
+
+    .report-tag {
+      font-family: 'Courier Prime', monospace;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 8px;
+    }
+
+    .report-claim {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(20px, 3.5vw, 30px);
+      font-style: italic;
+      line-height: 1.3;
+      max-width: 560px;
+    }
+
+    .report-meta {
+      font-family: 'Courier Prime', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .report-actions { display: flex; flex-direction: column; gap: 8px; }
+
+    .action-btn {
+      background: none;
+      border: 1.5px solid var(--ink);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 9px 16px;
+      cursor: pointer;
+      color: var(--ink);
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .action-btn:hover { background: var(--ink); color: var(--paper); }
+    .action-btn.primary { background: var(--ink); color: var(--paper); }
+    .action-btn.primary:hover { background: var(--red); border-color: var(--red); }
+
+    .stats-intro {
+      font-family: 'Courier Prime', monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    /* Grid: 3 cols, last row auto-fills */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2px;
+      background: var(--rule);
+      border: 2px solid var(--ink);
+    }
+
+    @media(max-width:780px){ .stats-grid { grid-template-columns: 1fr 1fr; } }
+    @media(max-width:560px){ .stats-grid { grid-template-columns: 1fr; } }
+
+    .stat-card {
+      background: var(--paper);
+      padding: 22px 20px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+
+    .stat-card.full-width { grid-column: span 1; }
+    .stat-card.visible { opacity: 1; transform: translateY(0); }
+
+    .stat-num {
+      font-family: 'Courier Prime', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+    }
+
+    .stat-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 14px;
+    }
+
+    .stat-big {
+      font-family: 'Playfair Display', serif;
+      font-size: 48px;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--red);
+    }
+
+    .stat-unit {
+      font-family: 'Courier Prime', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 14px;
+      margin-top: 2px;
+    }
+
+    .side-badge {
+      display: inline-block;
+      font-family: 'Courier Prime', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 2px;
+      margin-bottom: 12px;
+    }
+    .side-badge.supports { background: #e8f5ee; color: var(--green); border: 1px solid var(--green); }
+    .side-badge.contradicts { background: #faeaea; color: var(--red); border: 1px solid var(--red); }
+    .side-badge.neutral { background: var(--paper2); color: var(--muted); border: 1px solid var(--rule); }
+
+    /* Bar chart */
+    .bar-chart { margin-bottom: 14px; display: flex; flex-direction: column; gap: 5px; }
+
+    .bar-row-item { display: flex; align-items: center; gap: 8px; }
+
+    .bar-lbl {
+      font-family: 'Courier Prime', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      width: 80px;
+      flex-shrink: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .bar-track {
+      flex: 1;
+      height: 9px;
+      background: var(--paper2);
+      border: 1px solid var(--rule);
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      transition: width 1.1s cubic-bezier(0.22,1,0.36,1);
+    }
+
+    .bar-fill.hl { background: var(--red); }
+    .bar-fill.nm { background: var(--ink); opacity: 0.3; }
+
+    .bar-val-lbl {
+      font-family: 'Courier Prime', monospace;
+      font-size: 10px;
+      min-width: 32px;
+      text-align: right;
+    }
+
+    .bar-val-lbl.hl { color: var(--red); font-weight: bold; }
+
+    .stat-context {
+      font-size: 13px;
+      color: #5a5040;
+      line-height: 1.7;
+      margin-bottom: 12px;
+      border-left: 2px solid var(--rule);
+      padding-left: 12px;
+    }
+
+    .stat-why {
+      display: flex;
+      gap: 8px;
+      background: var(--paper2);
+      padding: 10px 12px;
+      border-left: 3px solid var(--gold);
+    }
+
+    .why-badge {
+      font-family: 'Courier Prime', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      white-space: nowrap;
+      padding-top: 2px;
+    }
+
+    .why-txt {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    /* VERDICT */
+    .verdict-wrap {
+      margin-top: 2px;
+      border: 2px solid var(--ink);
+      background: var(--ink);
+      color: var(--paper);
+      padding: 32px 36px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .verdict-wrap.visible { opacity: 1; transform: translateY(0); }
+
+    .verdict-lbl {
+      font-family: 'Courier Prime', monospace;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    /* Top row: gauge + rating side by side */
+    .verdict-top {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 40px;
+      align-items: center;
+      margin-bottom: 28px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid #3a3020;
+    }
+
+    @media(max-width:620px){ .verdict-top { grid-template-columns: 1fr; } }
+
+    /* Rating badge */
+    .rating-badge {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 900;
+      font-style: italic;
+      padding: 10px 22px;
+      border-radius: 2px;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
+    .rating-badge.good { background: var(--green); color: white; }
+    .rating-badge.mid { background: var(--gold); color: var(--ink); }
+    .rating-badge.bad { background: var(--red); color: white; }
+    .rating-badge.disaster { background: #111; color: var(--red); border: 2px solid var(--red); }
+
+    .rating-right { display: flex; flex-direction: column; gap: 8px; }
+
+    /* Score gauge - bigger, standalone */
+    .score-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .score-label {
+      font-family: 'Courier Prime', monospace;
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #7a6f5f;
+      text-align: center;
+      margin-bottom: 2px;
+    }
+
+    .gauge-svg { display: block; overflow: visible; }
+
+    .gauge-track {
+      fill: none;
+      stroke: #2a2010;
+      stroke-width: 14;
+      stroke-linecap: round;
+    }
+
+    .gauge-fill {
+      fill: none;
+      stroke-width: 14;
+      stroke-linecap: round;
+    }
+
+    .gauge-zones {
+      fill: none;
+      stroke-width: 14;
+      stroke-linecap: butt;
+      opacity: 0.15;
+    }
+
+    .gauge-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 40px;
+      font-weight: 900;
+      fill: white;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+
+    .gauge-denom {
+      font-family: 'Courier Prime', monospace;
+      font-size: 12px;
+      fill: #7a6f5f;
+      text-anchor: middle;
+    }
+
+    .gauge-zone-labels {
+      display: flex;
+      justify-content: space-between;
+      width: 190px;
+      font-family: 'Courier Prime', monospace;
+      font-size: 9px;
+      color: #5a4f3f;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    /* Roast box */
+    .roast-box {
+      background: #0f0d08;
+      border-left: 3px solid var(--gold);
+      padding: 14px 18px;
+      margin-bottom: 22px;
+      font-family: 'Courier Prime', monospace;
+      font-size: 14px;
+      color: #c8b890;
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    .roast-box::before { content: '💬 '; }
+
+    .verdict-body {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-style: italic;
+      line-height: 1.8;
+      color: #d0c8b8;
+    }
+
+    .verdict-foot {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid #3a3020;
+      font-family: 'Courier Prime', monospace;
+      font-size: 11px;
+      color: #7a6f5f;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    /* ERROR */
+    .error-box {
+      display: none;
+      border: 2px solid var(--red);
+      padding: 20px;
+      margin-top: 24px;
+    }
+
+    .error-box p { font-size: 13px; color: var(--red); line-height: 1.6; }
+
+    /* Footer */
+    .page-foot {
+      text-align: center;
+      padding: 40px 0 24px;
+      border-top: 1px solid var(--rule);
+      margin-top: 60px;
+    }
+
+    .page-foot p {
+      font-family: 'Courier Prime', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .ornament { font-size: 16px; letter-spacing: 0.6em; color: var(--muted); margin-bottom: 6px; }
+
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    @keyframes loadBar {
+      0% { transform: translateX(-100%); width: 55%; }
+      50% { transform: translateX(100%); width: 55%; }
+      100% { transform: translateX(220%); width: 55%; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="masthead-top">
+    <span id="dateStr"></span>
+    <span>THE FOOTBALL FACT BUREAU</span>
+    <span>ALL TOP EUROPEAN LEAGUES + CL</span>
+  </div>
+  <div class="masthead-title">
+    <h1>Well <em>Actually</em> 🤓👆</h1>
+    <div class="masthead-sub">The Stat-Backed Football Claim Investigator</div>
+  </div>
+  <div class="masthead-rule"></div>
+</div>
+
+<div class="main">
+
+  <!-- INPUT -->
+  <div class="input-section" id="inputSection">
+    <div class="input-left">
+      <h2>Someone said something foolish about football again?</h2>
+      <p>Type the hot take. We pull the statistics that actually matter — and explain why each one is relevant. No opinions. You decide what the data says.</p>
+      <div class="examples-label">Try an example →</div>
+      <div class="example-chips">
+        <button class="chip" onclick="setEx(this)">🔴 Liverpool always get favorable VAR decisions</button>
+        <button class="chip" onclick="setEx(this)">👑 Real Madrid only win CL because of refereeing</button>
+        <button class="chip" onclick="setEx(this)">💰 Man City's success is purely financial doping</button>
+        <button class="chip" onclick="setEx(this)">🏠 Home teams always get more penalties</button>
+      </div>
+    </div>
+    <div class="input-right">
+      <div class="field-label">The claim or hot take</div>
+      <textarea id="claimInput" placeholder="e.g. Liverpool always get the benefit of the doubt from referees..." rows="5"></textarea>
+      <button class="submit-btn" onclick="go()">Investigate This Claim →</button>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="loading-section" id="loadingSection">
+    <div class="loading-headline">Consulting the archive…</div>
+    <div class="loading-steps" id="loadingSteps">
+      <div class="loading-step" id="lstep0">
+        <div class="step-dot"></div>
+        <span class="step-label">Parsing the claim</span>
+        <span class="step-status">—</span>
+      </div>
+      <div class="loading-step" id="lstep1">
+        <div class="step-dot"></div>
+        <span class="step-label">Identifying relevant angles</span>
+        <span class="step-status">—</span>
+      </div>
+      <div class="loading-step" id="lstep2">
+        <div class="step-dot"></div>
+        <span class="step-label">Fetching live data</span>
+        <span class="step-status">—</span>
+      </div>
+      <div class="loading-step" id="lstep3">
+        <div class="step-dot"></div>
+        <span class="step-label">Cross-referencing numbers</span>
+        <span class="step-status">—</span>
+      </div>
+      <div class="loading-step" id="lstep4">
+        <div class="step-dot"></div>
+        <span class="step-label">Building the fact sheet</span>
+        <span class="step-status">—</span>
+      </div>
+    </div>
+    <div class="loading-bar-wrap"><div class="loading-bar"></div></div>
+    <div class="loading-sub" id="stepTxt">Hang tight…</div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="resultsSection">
+    <div class="report-header">
+      <div>
+        <div class="report-tag">⚖ Claim Under Investigation</div>
+        <div class="report-claim" id="rClaim"></div>
+        <div class="report-meta" id="rMeta"></div>
+      </div>
+      <div class="report-actions">
+        <button class="action-btn primary" onclick="dlPDF()">↓ Download Report</button>
+        <button class="action-btn" onclick="reset()">← New Claim</button>
+      </div>
+    </div>
+
+    <div class="stats-intro" id="statsIntro"></div>
+    <div class="stats-grid" id="statsGrid"></div>
+
+    <div class="verdict-wrap" id="verdictWrap">
+      <div class="verdict-lbl">⚖ The Verdict</div>
+      <div class="verdict-top">
+        <!-- Gauge left -->
+        <div class="score-wrap">
+          <div class="score-label">Claim Credibility Score</div>
+          <svg class="gauge-svg" width="200" height="130" viewBox="0 0 200 130">
+            <path class="gauge-zones" stroke="#c0392b" id="gZoneRed"/>
+            <path class="gauge-zones" stroke="#c9952a" id="gZoneAmber"/>
+            <path class="gauge-zones" stroke="#2a7a4b" id="gZoneGreen"/>
+            <path class="gauge-track" id="gTrack"/>
+            <path class="gauge-fill" id="gFill" stroke="#c0392b"/>
+            <g id="gTicks" opacity="0.35"></g>
+            <text class="gauge-number" id="gNumber" x="100" y="105">0</text>
+            <text class="gauge-denom" x="100" y="124">/100</text>
+          </svg>
+          <div class="gauge-zone-labels">
+            <span>Cooked</span>
+            <span style="text-align:center;">Mid</span>
+            <span>Banger</span>
+          </div>
+        </div>
+        <!-- Rating + roast right -->
+        <div class="rating-right">
+          <div>
+            <div class="rating-badge" id="ratingBadge"></div>
+          </div>
+          <div id="ratingSubtitle" style="font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#7a6f5f;"></div>
+          <div class="roast-box" id="roastBox"></div>
+        </div>
+      </div>
+      <div class="verdict-lbl">What The Data Collectively Shows</div>
+      <div class="verdict-body" id="verdictBody"></div>
+      <div class="verdict-foot">
+        <span>Well Actually 🤓👆 — No opinions. Just numbers. You decide.</span>
+        <span id="verdictDate"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ERROR -->
+  <div class="error-box" id="errorBox">
+    <p id="errorTxt"></p>
+  </div>
+
+</div>
+
+<div class="page-foot">
+  <div class="ornament">— ✦ —</div>
+  <p>Well Actually 🤓👆 · Football Claim Investigator</p>
+  <p>All Top European Leagues + Champions League · Live data powered by API-Football</p>
+</div>
+
+<script>
+const now = new Date();
+const ds = now.toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+document.getElementById('dateStr').textContent = ds;
+
+const STEP_LABELS = ['Parsing the claim…','Identifying relevant angles…','Fetching live data…','Cross-referencing numbers…','Building the fact sheet…'];
+let si = 0, stimer;
+
+function setLoadingStep(idx) {
+  for (let i = 0; i < 5; i++) {
+    const el = document.getElementById('lstep' + i);
+    const status = el.querySelector('.step-status');
+    el.classList.remove('active','done');
+    if (i < idx) { el.classList.add('done'); status.textContent = '✓'; }
+    else if (i === idx) { el.classList.add('active'); status.textContent = '...'; }
+    else { status.textContent = '—'; }
+  }
+  document.getElementById('stepTxt').textContent = STEP_LABELS[idx] || '';
+}
+
+const SYS = `You are the research engine for "Well Actually 🤓👆", a football statistics fact-checker.
+
+STEP 1 — SEARCH FIRST. Before writing anything, use your web search tool to look up the real current stats needed to fact-check this claim. Search for career totals, recent season numbers, trophies, awards — anything specific mentioned. Always search, never rely on memory alone for specific figures. Good search examples: "Mo Salah Premier League goals career total 2025", "Erling Haaland goals per season stats", "Liverpool Champions League titles all time".
+
+STEP 2 — BUILD 6 STATS. Using the real numbers you found, construct exactly 6 stats giving a BALANCED and HONEST picture. Actively find stats that both SUPPORT and CONTRADICT the claim. If the claim is wrong, the data should expose it.
+
+Rating labels (pick one honestly):
+- "Certified Banger" — well-supported, genuinely good take
+- "Spicy But Valid" — controversial but data backs it
+- "Mid Take" — partially true, partially wrong
+- "Cope" — driven by bias, data does not support it
+- "Nostalgia Merchant" — based on past glory that no longer applies
+- "Cooked" — significantly wrong
+- "Absolute Nonsense" — completely demolished by data
+- "Technically True But..." — true but massively misleading
+- "Ratio\'d By Stats" — confidently wrong, stats destroy it
+- "Hot Take Energy, Cold Take Reality" — sounds spicy, is not
+
+STEP 3 — OUTPUT ONLY JSON. Your entire response must be a single raw JSON object. No text before it, no text after it, no markdown fences. Start with { and end with }.
+
+{
+  "intro": "One punchy sentence max 18 words framing the statistical question.",
+  "stats": [
+    {
+      "title": "Punchy stat title max 8 words",
+      "value": "The key number or figure",
+      "unit": "What it measures e.g. Premier League goals career total",
+      "side": "supports OR contradicts OR neutral",
+      "context": "2-3 sentences with real numbers from your search. Be specific.",
+      "why": "One sentence: why this stat matters for the claim.",
+      "chartData": [
+        {"label": "Name max 10 chars", "value": 0, "highlight": false}
+      ]
+    }
+  ],
+  "summary": "3-4 brutally honest sentences on what the data collectively shows. End inviting the user to decide.",
+  "rating": "exact label from the list above",
+  "score": 72,
+  "roast": "One savage funny Reddit-style sentence about the claim."
+}
+
+Score guide — the score MUST match the rating:
+- Certified Banger / Spicy But Valid → score 75-95
+- Technically True But... → score 60-75
+- Mid Take / Hot Take Energy Cold Take Reality → score 40-60
+- Nostalgia Merchant → score 30-50
+- Cope / Cooked → score 15-35
+- Absolute Nonsense / Ratio'd By Stats → score 0-20
+
+Hard rules:
+- Exactly 6 stats always
+- chartData: 4-6 entries with real numbers comparing subject to peers, highlight:true for subject only
+- NEVER invent or estimate a stat — use numbers from your web search
+- The score field must be a real number matching the score guide above, NOT zero
+- Pure JSON only — any text outside the JSON will break the parser`
+
+function setEx(btn) {
+  document.getElementById('claimInput').value = btn.textContent.replace(/^[^\s]+\s/,'');
+}
+
+async function go() {
+  const claim = document.getElementById('claimInput').value.trim();
+  if (!claim) return;
+
+  document.getElementById('inputSection').style.display = 'none';
+  document.getElementById('loadingSection').style.display = 'block';
+  document.getElementById('resultsSection').style.display = 'none';
+  document.getElementById('errorBox').style.display = 'none';
+
+  si = 0;
+  setLoadingStep(0);
+  let stepIdx = 0;
+  stimer = setInterval(()=>{
+    stepIdx = Math.min(stepIdx + 1, 4);
+    setLoadingStep(stepIdx);
+  }, 1800);
+
+  try {
+    const res = await fetch('http://localhost:5050/ask', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:2000,
+        system: SYS,
+        messages:[{role:'user',content:claim}]
+      })
+    });
+    const data = await res.json();
+    const raw = data.content?.find(b=>b.type==='text')?.text || '';
+
+    // Robustly extract JSON — find the outermost { } block regardless of surrounding text
+    function extractJSON(str) {
+      const start = str.indexOf('{');
+      if (start === -1) throw new Error('No JSON object found');
+      let depth = 0, inStr = false, escape = false;
+      for (let i = start; i < str.length; i++) {
+        const ch = str[i];
+        if (escape) { escape = false; continue; }
+        if (ch === '\\' && inStr) { escape = true; continue; }
+        if (ch === '"') { inStr = !inStr; continue; }
+        if (inStr) continue;
+        if (ch === '{') depth++;
+        else if (ch === '}') { depth--; if (depth === 0) return str.slice(start, i + 1); }
+      }
+      throw new Error('Unbalanced JSON');
+    }
+
+    let parsed;
+    try {
+      parsed = JSON.parse(extractJSON(raw));
+    } catch(e) {
+      // Last resort: try stripping fences and parsing directly
+      const bt = String.fromCharCode(96);
+      const cleaned = raw.replace(new RegExp(bt+bt+bt+'[a-z]*', 'g'), '').trim();
+      parsed = JSON.parse(extractJSON(cleaned));
+    }
+    clearInterval(stimer);
+    render(claim, parsed);
+  } catch(e) {
+    clearInterval(stimer);
+    document.getElementById('loadingSection').style.display = 'none';
+    document.getElementById('inputSection').style.display = 'grid';
+    document.getElementById('errorBox').style.display = 'block';
+    document.getElementById('errorTxt').textContent = '⚠ Could not pull stats. Please try again. ('+(e.message||'error')+')';
+  }
+}
+
+function render(claim, data) {
+  // Mark all steps done
+  for (let i = 0; i < 5; i++) {
+    const el = document.getElementById('lstep' + i);
+    el.classList.remove('active');
+    el.classList.add('done');
+    el.querySelector('.step-status').textContent = '✓';
+  }
+  setTimeout(() => {
+    document.getElementById('loadingSection').style.display = 'none';
+    document.getElementById('resultsSection').style.display = 'block';
+  }, 400);
+
+  document.getElementById('rClaim').textContent = `"${claim}"`;
+  document.getElementById('rMeta').textContent = `Investigated · ${ds}`;
+  document.getElementById('statsIntro').textContent = (data.intro||'').toUpperCase();
+
+  const grid = document.getElementById('statsGrid');
+  grid.innerHTML = '';
+
+  (data.stats||[]).forEach((stat,i) => {
+    const card = document.createElement('div');
+    card.className = 'stat-card';
+
+    const maxV = Math.max(...(stat.chartData||[]).map(d=>d.value), 1);
+
+    const bars = (stat.chartData||[]).map(d => `
+      <div class="bar-row-item">
+        <span class="bar-lbl" title="${d.label}">${d.label}</span>
+        <div class="bar-track">
+          <div class="bar-fill ${d.highlight?'hl':'nm'}" data-pct="${Math.round(d.value/maxV*100)}" style="width:0%"></div>
+        </div>
+        <span class="bar-val-lbl ${d.highlight?'hl':''}">${d.value}</span>
+      </div>`).join('');
+
+    const side = (stat.side||'neutral').toLowerCase();
+    const sideLabel = side === 'supports' ? '✓ Supports claim' : side === 'contradicts' ? '✗ Contradicts claim' : '~ Context';
+    card.innerHTML = `
+      <div class="stat-num">STAT ${String(i+1).padStart(2,'0')} / ${String((data.stats||[]).length).padStart(2,'0')}</div>
+      <div class="stat-title">${stat.title}</div>
+      <div class="stat-big">${stat.value}</div>
+      <div class="stat-unit">${stat.unit||''}</div>
+      <span class="side-badge ${side}">${sideLabel}</span>
+      ${bars ? `<div class="bar-chart">${bars}</div>` : ''}
+      <p class="stat-context">${stat.context}</p>
+      <div class="stat-why">
+        <span class="why-badge">Why?</span>
+        <span class="why-txt">${stat.why}</span>
+      </div>`;
+
+    grid.appendChild(card);
+
+    setTimeout(()=>{
+      card.classList.add('visible');
+      card.querySelectorAll('.bar-fill').forEach(b=>{
+        const p = b.getAttribute('data-pct');
+        setTimeout(()=>{ b.style.width = p+'%'; }, 150);
+      });
+    }, 80 + i*120);
+  });
+
+  // Rating badge
+  const rating = data.rating || 'Mid Take';
+  const score = typeof data.score === 'number' ? data.score : 50;
+
+  const ratingMeta = {
+    'Certified Banger':              { cls:'good',    sub:'Statistically sound. Respect.' },
+    'Spicy But Valid':               { cls:'good',    sub:'Hot take. Data agrees.' },
+    'Technically True But...':       { cls:'good',    sub:'Correct, but you\'re missing something.' },
+    'Mid Take':                      { cls:'mid',     sub:'Neither here nor there.' },
+    'Nostalgia Merchant':            { cls:'mid',     sub:'Living in the past, mate.' },
+    'Hot Take Energy, Cold Take Reality': { cls:'mid', sub:'Sounds spicy. Isn\'t.' },
+    'Cope':                          { cls:'bad',     sub:'Sir, this is a Wendy\'s.' },
+    'Cooked':                        { cls:'bad',     sub:'The stats have spoken.' },
+    'Absolute Nonsense':             { cls:'disaster',sub:'Deleted. Next.' },
+    "Ratio'd By Stats":              { cls:'disaster',sub:'The numbers don\'t care about your feelings.' },
+  };
+  const meta = ratingMeta[rating] || { cls:'mid', sub:'' };
+
+  const badge = document.getElementById('ratingBadge');
+  badge.textContent = rating;
+  badge.className = 'rating-badge ' + meta.cls;
+  document.getElementById('ratingSubtitle').textContent = meta.sub;
+
+  // Arc gauge — centre (100,110), radius 78, sweeps 210° to 330° (120° arc)
+  const cx = 100, cy = 110, r = 78;
+  const startDeg = 210, totalDeg = 120;
+
+  function polarToXY(deg, radius) {
+    const rad = (deg - 90) * Math.PI / 180;
+    return { x: cx + radius * Math.cos(rad), y: cy + radius * Math.sin(rad) };
+  }
+
+  function arcPath(fromDeg, toDeg, radius) {
+    if (Math.abs(toDeg - fromDeg) < 0.01) return '';
+    const s = polarToXY(fromDeg, radius);
+    const e = polarToXY(toDeg, radius);
+    const large = (toDeg - fromDeg) > 180 ? 1 : 0;
+    return `M ${s.x} ${s.y} A ${radius} ${radius} 0 ${large} 1 ${e.x} ${e.y}`;
+  }
+
+  // Full background track
+  document.getElementById('gTrack').setAttribute('d', arcPath(startDeg, startDeg + totalDeg, r));
+
+  // Coloured zone overlays (red 0-33, amber 33-66, green 66-100)
+  document.getElementById('gZoneRed').setAttribute('d',   arcPath(startDeg, startDeg + totalDeg*0.33, r));
+  document.getElementById('gZoneAmber').setAttribute('d', arcPath(startDeg + totalDeg*0.33, startDeg + totalDeg*0.66, r));
+  document.getElementById('gZoneGreen').setAttribute('d', arcPath(startDeg + totalDeg*0.66, startDeg + totalDeg, r));
+
+  // Tick marks at 0,10,20...100
+  const tickG = document.getElementById('gTicks');
+  tickG.innerHTML = '';
+  for (let t = 0; t <= 100; t += 10) {
+    const deg = startDeg + (t / 100) * totalDeg;
+    const inner = polarToXY(deg, r - 6);
+    const outer = polarToXY(deg, r + 6);
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', inner.x); line.setAttribute('y1', inner.y);
+    line.setAttribute('x2', outer.x); line.setAttribute('y2', outer.y);
+    line.setAttribute('stroke', t % 50 === 0 ? '#7a6f5f' : '#3a3020');
+    line.setAttribute('stroke-width', t % 50 === 0 ? '2' : '1');
+    tickG.appendChild(line);
+  }
+
+  // Animate the fill arc and counter
+  const fillArc = document.getElementById('gFill');
+  const numEl = document.getElementById('gNumber');
+  const fillColor = score >= 65 ? '#2a7a4b' : score >= 35 ? '#c9952a' : '#c0392b';
+  fillArc.setAttribute('stroke', fillColor);
+  fillArc.setAttribute('d', arcPath(startDeg, startDeg, r)); // start at 0
+
+  let current = 0;
+  const target = score;
+  const duration = 1400;
+  const startTime = performance.now();
+
+  function animateGauge(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    // Ease out cubic
+    const eased = 1 - Math.pow(1 - progress, 3);
+    current = Math.round(eased * target);
+    const endDeg = startDeg + (current / 100) * totalDeg;
+    fillArc.setAttribute('d', arcPath(startDeg, endDeg, r));
+    numEl.textContent = current;
+    if (progress < 1) requestAnimationFrame(animateGauge);
+  }
+  setTimeout(() => requestAnimationFrame(animateGauge), 400);
+
+  // Roast
+  document.getElementById('roastBox').textContent = data.roast || '';
+
+  document.getElementById('verdictBody').textContent = data.summary;
+  document.getElementById('verdictDate').textContent = ds;
+  setTimeout(()=>{ document.getElementById('verdictWrap').classList.add('visible'); }, 400 + 80 + 6*120 + 100);
+}
+
+function reset() {
+  document.getElementById('resultsSection').style.display = 'none';
+  document.getElementById('verdictWrap').classList.remove('visible');
+  const fillArc = document.getElementById('gFill');
+  if (fillArc) fillArc.setAttribute('d','');
+  document.getElementById('gNumber').textContent = '0';
+  document.getElementById('inputSection').style.display = 'grid';
+  document.getElementById('claimInput').value = '';
+}
+
+// PDF Download
+async function dlPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+  const W=210, M=16;
+  let y=M;
+
+  const claim = document.getElementById('rClaim').textContent;
+  const intro = document.getElementById('statsIntro').textContent;
+  const verdict = document.getElementById('verdictBody').textContent;
+  const cards = document.querySelectorAll('.stat-card');
+
+  // Header
+  doc.setFillColor(26,18,8);
+  doc.rect(0,0,W,36,'F');
+  doc.setTextColor(245,240,232);
+  doc.setFont('times','bolditalic');
+  doc.setFontSize(26);
+  doc.text('Well Actually',M,16);
+  doc.setFont('times','italic');
+  doc.setFontSize(10);
+  doc.text('The Stat-Backed Football Claim Investigator',M,24);
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(8);
+  doc.setTextColor(160,140,100);
+  doc.text(ds, M, 32);
+  doc.text('All Top European Leagues + Champions League', W-M, 32, {align:'right'});
+
+  y = 44;
+
+  // Claim
+  doc.setFillColor(240,235,218);
+  doc.setDrawColor(192,57,43);
+  doc.setLineWidth(0.5);
+  const claimLines = doc.splitTextToSize(claim, W-M*2-8);
+  const claimH = claimLines.length*5+12;
+  doc.rect(M, y, W-M*2, claimH, 'FD');
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(7.5);
+  doc.setTextColor(192,57,43);
+  doc.text('CLAIM UNDER INVESTIGATION', M+4, y+6);
+  doc.setFont('times','italic');
+  doc.setFontSize(11.5);
+  doc.setTextColor(26,18,8);
+  doc.text(claimLines, M+4, y+12);
+  y += claimH + 6;
+
+  if (intro) {
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(100,90,70);
+    doc.text(intro, M, y);
+    y += 7;
+  }
+
+  doc.setDrawColor(200,191,170);
+  doc.setLineWidth(0.2);
+  doc.line(M, y, W-M, y);
+  y += 5;
+
+  cards.forEach((card,i)=>{
+    const title = card.querySelector('.stat-title')?.textContent||'';
+    const big = card.querySelector('.stat-big')?.textContent||'';
+    const unit = card.querySelector('.stat-unit')?.textContent||'';
+    const ctx = card.querySelector('.stat-context')?.textContent||'';
+    const why = card.querySelector('.why-txt')?.textContent||'';
+    const barItems = card.querySelectorAll('.bar-row-item');
+
+    if (y > 250) { doc.addPage(); y = M; }
+
+    doc.setFont('times','bold');
+    doc.setFontSize(12.5);
+    doc.setTextColor(26,18,8);
+    doc.text(`${i+1}. ${title}`, M, y);
+    y += 5;
+
+    doc.setFont('times','bolditalic');
+    doc.setFontSize(20);
+    doc.setTextColor(192,57,43);
+    doc.text(big, M, y);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(120,100,70);
+    doc.text(unit, M+32, y-1);
+    y += 6;
+
+    if (barItems.length) {
+      const vals = Array.from(barItems).map(b=>parseFloat(b.querySelector('.bar-val-lbl')?.textContent||'0'));
+      const maxV = Math.max(...vals,1);
+      const bW=88, bH=3.5, bX=M;
+
+      barItems.forEach((item,bi)=>{
+        if (y>268){ doc.addPage(); y=M; }
+        const lbl=(item.querySelector('.bar-lbl')?.textContent||'').slice(0,12);
+        const val=vals[bi];
+        const hl=item.querySelector('.bar-fill.hl')!==null;
+        const pct=val/maxV;
+
+        doc.setFont('courier','normal');
+        doc.setFontSize(7);
+        doc.setTextColor(hl?192:100, hl?57:90, hl?43:70);
+        doc.text(lbl, bX, y+bH-0.5);
+
+        const tX=bX+26;
+        doc.setFillColor(230,225,210);
+        doc.rect(tX, y-0.5, bW, bH, 'F');
+        doc.setFillColor(hl?192:55, hl?57:48, hl?43:38);
+        doc.rect(tX, y-0.5, bW*pct, bH, 'F');
+        doc.setFont('courier','bold');
+        doc.setFontSize(7);
+        doc.text(String(val), tX+bW+2, y+bH-0.5);
+        y += bH+2;
+      });
+      y += 2;
+    }
+
+    if (ctx) {
+      doc.setFont('times','italic');
+      doc.setFontSize(9);
+      doc.setTextColor(60,50,38);
+      const lines = doc.splitTextToSize(ctx, W-M*2);
+      doc.text(lines, M, y);
+      y += lines.length*4.2+2;
+    }
+
+    if (why) {
+      const wLines = doc.splitTextToSize('WHY THIS: '+why, W-M*2-8);
+      doc.setFillColor(250,245,230);
+      doc.setDrawColor(201,149,42);
+      doc.setLineWidth(0.4);
+      doc.rect(M, y, W-M*2, wLines.length*4+6,'FD');
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(8);
+      doc.setTextColor(100,78,38);
+      doc.text(wLines, M+4, y+4.5);
+      y += wLines.length*4+10;
+    }
+
+    doc.setDrawColor(200,191,170);
+    doc.setLineWidth(0.2);
+    doc.line(M,y,W-M,y);
+    y += 5;
+  });
+
+  // Verdict
+  if (y>240){ doc.addPage(); y=M; }
+  doc.setFillColor(26,18,8);
+  doc.rect(M,y,W-M*2,7,'F');
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(7.5);
+  doc.setTextColor(201,149,42);
+  doc.text('WHAT THE DATA COLLECTIVELY SHOWS', M+4, y+4.8);
+  y += 11;
+
+  doc.setFont('times','italic');
+  doc.setFontSize(10);
+  doc.setTextColor(26,18,8);
+  const vLines = doc.splitTextToSize(verdict, W-M*2);
+  doc.text(vLines, M, y);
+  y += vLines.length*4.5+8;
+
+  doc.setFont('courier','normal');
+  doc.setFontSize(8);
+  doc.setTextColor(150,138,118);
+  doc.text('Well Actually 🤓 — No opinions. Just numbers. You decide.', M, y);
+  doc.text(ds, W-M, y, {align:'right'});
+
+  doc.save('well-actually-report.pdf');
+}
+
+document.getElementById('claimInput').addEventListener('keydown', e=>{
+  if (e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); go(); }
+});
+</script>
+</body>
+</html>

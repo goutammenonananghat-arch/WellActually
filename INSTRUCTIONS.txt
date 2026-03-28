@@ -1,0 +1,78 @@
+# Well Actually 🤓👆 — Setup Instructions (v2 - Live Data!)
+
+## What's new
+The app now pulls REAL, LIVE football data from API-Football!
+Current season stats, standings, top scorers — all up to date.
+
+---
+
+## First time setup (do this once)
+
+### Step 1 — Install Python packages
+Open Terminal (Mac) or Command Prompt (Windows) and run:
+
+    pip install flask flask-cors requests
+
+### Step 2 — Get your FREE Groq API key
+1. Go to https://console.groq.com
+2. Sign up (free, no credit card)
+3. Click "API Keys" → "Create API Key" → copy it
+
+### Step 3 — Get your FREE API-Football key
+1. Go to https://dashboard.api-football.com/register
+2. Sign up (free, no credit card needed)
+3. Once logged in, find your API key in your profile/dashboard
+4. The free plan gives you 100 requests per day — plenty for testing!
+
+### Step 4 — Add both keys to server.py
+Open server.py in Notepad/TextEdit and find these lines near the top:
+
+    GROQ_API_KEY = "YOUR_GROQ_API_KEY_HERE"
+    FOOTBALL_API_KEY = "YOUR_FOOTBALL_API_KEY_HERE"
+
+Replace them with your actual keys (keep the quotes). Save the file.
+
+---
+
+## Running the app (every time you want to use it)
+
+Step 1 — Open Terminal/Command Prompt and navigate to the folder:
+
+    cd path/to/WellActually
+
+Step 2 — Start the server:
+
+    python server.py
+
+You should see:
+    Well Actually server running at http://localhost:5050
+
+Step 3 — Open your browser and go to:
+
+    http://localhost:5050
+
+That's it! Type a claim and hit Investigate.
+
+---
+
+## How it works now
+
+1. You type a claim
+2. The AI figures out what data to look up
+3. The server fetches REAL stats from API-Football (standings, team stats, player stats, etc.)
+4. The AI analyzes the real data and presents its findings
+5. All numbers are current season!
+
+---
+
+## Stopping the server
+
+Press Ctrl+C in the terminal window.
+
+---
+
+## Notes
+- The free API-Football plan gives 100 requests/day
+- Data is cached for 1 hour to save requests
+- Each claim uses roughly 3-6 API calls
+- NEVER share your API keys publicly!

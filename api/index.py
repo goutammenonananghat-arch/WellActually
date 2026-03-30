@@ -10,8 +10,8 @@ CORS(app)
 # =============================================
 # PASTE YOUR API KEYS HERE
 # =============================================
-GROQ_API_KEY = "YOUR_GROQ_API_KEY_HERE"
-TAVILY_API_KEY = "YOUR_TAVILY_API_KEY_HERE"   # get free key at tavily.com — no card needed
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+TAVILY_API_KEY = os.environ.get("TAVILY_API_KEY", "")
 # =============================================
 
 
@@ -59,8 +59,7 @@ def groq_call(messages, max_tokens=4000, temperature=0.5):
 
 @app.route("/")
 def index():
-    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), "gem6.html")
-
+    return send_from_directory(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."), "gem6.html")
 
 @app.route("/ask", methods=["POST"])
 def ask():
